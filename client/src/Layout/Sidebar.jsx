@@ -11,11 +11,12 @@ import { useState } from 'react'
 import '../Styles/sidebar.css';
 import '../Styles/App.css'
 import ConversationItem from '../Components/ConversationItem'
-
+import { useNavigate } from 'react-router-dom'
 
 
 const Sidebar = () => {
 
+    const navigate = useNavigate()
     const [conversations, setConversations] = useState([
         {
             _id: Math.random(),
@@ -50,18 +51,18 @@ const Sidebar = () => {
             <div className="sb-header sticky top-0 lg:z-10 md:h-full sm:h-full xsm:w-full dark:bg-stone-800
             dark:text-gray-100">
                 <div>
-                    <IconButton >
+                    <IconButton onClick={() => { navigate('/inbox/welcome') }}>
                         <AccountCircleIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
                     </IconButton>
                 </div>
                 <div>
-                    <IconButton >
+                    <IconButton onClick={() => { navigate('/inbox/users') }}>
                         <PersonAddIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
                     </IconButton>
-                    <IconButton >
+                    <IconButton onClick={() => { navigate('/inbox/groups') }}>
                         <GroupAddIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
                     </IconButton>
-                    <IconButton >
+                    <IconButton onClick={() => { navigate('/inbox/create-group') }}>
                         <AddCircleIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
                     </IconButton>
                     <IconButton >
