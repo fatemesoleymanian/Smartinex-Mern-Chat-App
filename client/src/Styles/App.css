@@ -1,0 +1,17 @@
+* {
+  margin: 0;
+}
+
+.dark-container {
+  background-color: #424242 !important;
+  color: #757575 !important;
+}
+
+.dark {
+  background-color: #212121 !important;
+  color: whitesmoke !important;
+}
+
+.dark-txt {
+  color: whitesmoke !important;
+}
