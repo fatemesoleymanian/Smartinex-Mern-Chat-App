@@ -13,6 +13,7 @@ import React, { useState } from "react";
 import '../Styles/create-groups.css'
 import '../Styles/App.css'
 import DoneOutlineRoundedIcon from '@mui/icons-material/DoneOutlineRounded';
+import { AnimatePresence, motion } from "framer-motion";
 
 export const CreateGroup = () => {
     const [groupName, setGroupName] = useState('');
@@ -29,7 +30,7 @@ export const CreateGroup = () => {
     }
 
     return (
-        <>
+        <AnimatePresence>
             <Dialog
                 open={open}
                 onClose={handleClose}
@@ -57,7 +58,13 @@ export const CreateGroup = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-            <section className="relative max-h-full h-full bg-white rounded-lg w-full flex flex-col dark:bg-stone-950 lg:flex">
+            <motion.section initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 1, scale: 1 }}
+                transition={{
+                    ease: "anticipate",
+                    duration: "0.4"
+                }}
+                className="relative max-h-full h-full bg-white rounded-lg w-full flex flex-col dark:bg-stone-950 lg:flex">
                 <div className="create-group-wrapper w-4/5 dark:bg-stone-800 dark:text-gray-100 shadow-md">
                     <input type="text" placeholder="Enter group name"
                         className={"search-box dark:bg-stone-800 dark:text-gray-100"}
@@ -75,8 +82,8 @@ export const CreateGroup = () => {
                     </IconButton>
 
                 </div>
-            </section>
-        </>
+            </motion.section>
+        </AnimatePresence>
 
     )
 }

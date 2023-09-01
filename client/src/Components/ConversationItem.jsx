@@ -1,11 +1,12 @@
 import '../Styles/sidebar.css';
 import '../Styles/App.css'
-
+import { motion } from 'framer-motion'
 export const ConversationItem = ({ name, lastMessage, timestamp, _id }) => {
 
 
     return (
-        <div className="cursor-pointer flex - px-8">
+        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.98 }}
+            className="cursor-pointer flex - px-8">
             {/* icon */}
 
             <div className="mr-4 relative w-12 text-center">
@@ -33,7 +34,7 @@ export const ConversationItem = ({ name, lastMessage, timestamp, _id }) => {
             </div>
 
 
-        </div>
+        </motion.div>
     )
 
 }

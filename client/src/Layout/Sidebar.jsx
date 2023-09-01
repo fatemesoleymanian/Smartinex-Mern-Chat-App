@@ -12,11 +12,16 @@ import '../Styles/sidebar.css';
 import '../Styles/App.css'
 import ConversationItem from '../Components/ConversationItem'
 import { useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import { toggleTheme } from '../Store/themeSlice';
+import { AnimatePresence, motion } from 'framer-motion'
 
 
 const Sidebar = () => {
 
-    const navigate = useNavigate()
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const lightTheme = useSelector((state) => state.themeKey)
     const [conversations, setConversations] = useState([
         {
             _id: Math.random(),
@@ -44,71 +49,93 @@ const Sidebar = () => {
         },
     ]);
     return (
-        <aside className="w-1/8 lg:w-2/6 bg-white dark:bg-stone-950 rounded-lg mr-5 xsm:mr-0 overflow-y-scroll
+        <AnimatePresence>
+            <motion.aside className="w-1/8 lg:w-2/6 bg-white dark:bg-stone-950 rounded-lg mr-5 xsm:mr-0 overflow-y-scroll
         scrollbar-width scrollbar-thumb-color dark:scrollbar-thumb-color-dark">
 
-            {/* HEADER START */}
-            <div className="sb-header sticky top-0 lg:z-10 md:h-full sm:h-full xsm:w-full dark:bg-stone-800
+                {/* HEADER START */}
+                <motion.div initial={{ scaleY: 0 }}
+                    animate={{ scaleY: 1 }} exit={{ scaleY: 1 }}
+                    transition={{
+                        ease: "anticipate",
+                        duration: "0.4"
+                    }} className="sb-header sticky top-0 lg:z-10 md:h-full sm:h-full xsm:w-full dark:bg-stone-800
             dark:text-gray-100">
-                <div>
-                    <IconButton onClick={() => { navigate('/inbox/welcome') }}>
-                        <AccountCircleIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
-                    </IconButton>
-                </div>
-                <div>
-                    <IconButton onClick={() => { navigate('/inbox/users') }}>
-                        <PersonAddIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
-                    </IconButton>
-                    <IconButton onClick={() => { navigate('/inbox/groups') }}>
-                        <GroupAddIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
-                    </IconButton>
-                    <IconButton onClick={() => { navigate('/inbox/create-group') }}>
-                        <AddCircleIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
-                    </IconButton>
+                    <div>
+                        <IconButton onClick={() => { navigate('/inbox/welcome') }}>
+                            <AccountCircleIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
+                        </IconButton>
+                    </div>
+                    <div>
+                        <IconButton onClick={() => { navigate('/inbox/users') }}>
+                            <PersonAddIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
+                        </IconButton>
+                        <IconButton onClick={() => { navigate('/inbox/groups') }}>
+                            <GroupAddIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
+                        </IconButton>
+                        <IconButton onClick={() => { navigate('/inbox/create-group') }}>
+                            <AddCircleIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
+                        </IconButton>
+                        <IconButton onClick={() => {
+                            dispatch(toggleTheme())
+                        }}>
+                            {lightTheme && <NightLightIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />}
+                            {!lightTheme && <LightModeIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />}
+                        </IconButton>
+
+                        <IconButton >
+
+                            <LogoutIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
+
+                        </IconButton>
+                    </div>
+
+                </motion.div>
+                {/* HEADER END */}
+                {/* SEARCH START */}
+                <motion.div initial={{ scaleY: 0 }}
+                    animate={{ scaleY: 1 }} exit={{ scaleY: 1 }}
+                    transition={{
+                        ease: "anticipate",
+                        duration: "0.4"
+                    }} className='sb-search sticky top-20 lg:z-10 dark:bg-stone-800 dark:text-gray-100'>
                     <IconButton >
-                        <NightLightIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
+                        <SearchIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
                     </IconButton>
+                    <input type="text" placeholder='Search...' className='search-box dark:bg-stone-800 dark:text-gray-100' />
+                </motion.div>
 
-                    <IconButton >
-                        <LogoutIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
-                    </IconButton>
-                </div>
-
-            </div>
-            {/* HEADER END */}
-            {/* SEARCH START */}
-            <div className='sb-search sticky top-20 lg:z-10 dark:bg-stone-800 dark:text-gray-100'>
-                <IconButton >
-                    <SearchIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
-                </IconButton>
-                <input type="text" placeholder='Search...' className='search-box dark:bg-stone-800 dark:text-gray-100' />
-            </div>
-
-            {/* SERACH END */}
-            {/* CONVERSATIONS START */}
-            <div className='flex-1 overflow-y-scroll scrollbar-width scrollbar-thumb-color
+                {/* SERACH END */}
+                {/* CONVERSATIONS START */}
+                <motion.div initial={{ scaleY: 0 }}
+                    animate={{ scaleY: 1 }} exit={{ scaleY: 1 }}
+                    transition={{
+                        ease: "anticipate",
+                        duration: "0.4"
+                    }} className='flex-1 overflow-y-scroll scrollbar-width scrollbar-thumb-color
             dark:scrollbar-thumb-color-dark md:hidden'>
-                <div className='w-full space-y-10'>
-                    {conversations &&
-                        conversations.map((conv, index) => {
-                            return (
-                                <ConversationItem _id={conv._id} name={conv.name} lastMessage={conv.lastMessage}
-                                    timestamp={conv.createdAt} key={index} />
+                    <div className='w-full space-y-10'>
+                        {conversations &&
+                            conversations.map((conv, index) => {
+                                return (
+                                    <ConversationItem _id={conv._id} name={conv.name} lastMessage={conv.lastMessage}
+                                        timestamp={conv.createdAt} key={index} />
 
-                            )
-                        })
-                    }
+                                )
+                            })
+                        }
 
-                </div>
+                    </div>
 
-            </div>
+                </motion.div>
 
-            {/* CONVERSATIONS END */}
-
-
+                {/* CONVERSATIONS END */}
 
 
-        </aside>
+
+
+            </motion.aside>
+        </AnimatePresence>
     )
 }
 
