@@ -7,9 +7,12 @@ import Chatbar from './Pages/Chatbar';
 import Users from './Pages/Users';
 import Groups from './Pages/Groups';
 import CreateGroup from './Pages/CreateGroup';
+import { useSelector } from 'react-redux';
 function App() {
+
+  const lightTheme = useSelector((state) => state.themeKey);
   return (
-    <div className='flex flex-1 overflow-hidden h-screen max-w-screen-2xl m-auto'>
+    <div className={'flex flex-1 overflow-hidden h-screen max-w-screen-2xl m-auto' + (lightTheme ? "" : " dark")}>
       <Routes>
         <Route path='/' element={<LoginAndRegister />} />
         <Route path='inbox' element={<MainContainer />} >

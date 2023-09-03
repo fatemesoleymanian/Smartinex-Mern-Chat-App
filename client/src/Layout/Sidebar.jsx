@@ -77,13 +77,13 @@ const Sidebar = () => {
                             <AddCircleIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
                         </IconButton>
                         <IconButton onClick={() => {
-                            dispatch(toggleTheme())
+                            dispatch(toggleTheme());
                         }}>
                             {lightTheme && <NightLightIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />}
                             {!lightTheme && <LightModeIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />}
                         </IconButton>
 
-                        <IconButton >
+                        <IconButton onClick={() => { navigate('/') }}>
 
                             <LogoutIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
 

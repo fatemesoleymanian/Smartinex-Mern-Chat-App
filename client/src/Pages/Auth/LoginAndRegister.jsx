@@ -7,13 +7,15 @@ import {
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import '../../Styles/login.css'
 import { AnimatePresence, motion } from 'framer-motion';
 
 const LoginAndRegister = () => {
 
     const [log_or_reg, setLog_or_reg] = useState(false)
-    const [lightTheme, setLightTheme] = useState(false);
+
+    const lightTheme = useSelector((state) => state.themeKey);
     const [showPassword, setShowPassword] = useState(false)
 
     const handleClickShowPassword = () => setShowPassword((show) => !show)
@@ -30,7 +32,7 @@ const LoginAndRegister = () => {
                     ease: "anticipate",
                     duration: "0.4"
                 }}
-                className="login-wrapper dark:bg-stone:950 dark:text-gray-100">
+                className={"login-wrapper dark:bg-stone:950 dark:text-gray-100" + (lightTheme ? "" : " dark")}>
                 {/* left side start */}
                 <div className="image-container">
                     <img src={Logo} alt="logo" className="welcome-logo" />
