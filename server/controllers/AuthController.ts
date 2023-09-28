@@ -1,20 +1,20 @@
 import { Response, Request } from "express";
 const UserModel = require('../models/UserModel')
-
+const { BadRequestError, UnauthorizedError } = require("../error")
 
 const login = async (req: Request, res: Response) => {
     const { name, password } = req.body
     if (!name || !password) {
-        return res.status(400).send("please provide required fields!")
+        throw new BadRequestError("Please provide username and password!")
     }
 
     const user = await UserModel.findOne({ name });
 
-    if (!user) { return res.send("There is no user with such username!") }
+    if (!user) { throw new UnauthorizedError("There is no user with such username!") }
 
     const isPasswordCorrect = await user.comparePassword(password);
 
-    if (!isPasswordCorrect) { return res.send("Invalid password!") }
+    if (!isPasswordCorrect) { throw new UnauthorizedError("Invalid password!") }
 
     const token = user.createJWT();
 
@@ -33,7 +33,7 @@ const login = async (req: Request, res: Response) => {
 const signup = async (req: Request, res: Response) => {
     const { name, email, password } = req.body
     if (!name || !email || !password) {
-        return res.status(404).send("please provide required fields!");
+        throw new BadRequestError("Please provide required fields!")
     }
     const user = await UserModel.create({ ...req.body })
 
