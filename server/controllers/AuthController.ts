@@ -1,6 +1,7 @@
 import { Response, Request } from "express";
 const UserModel = require('../models/UserModel')
 const { BadRequestError, UnauthorizedError } = require("../error")
+const { StatusCodes } = require("http-status-codes")
 
 const login = async (req: Request, res: Response) => {
     const { name, password } = req.body
@@ -18,7 +19,7 @@ const login = async (req: Request, res: Response) => {
 
     const token = user.createJWT();
 
-    res.status(200).json({
+    res.status(StatusCodes.OK).json({
         user: {
             name: user.getName(),
             email: user.getEmail(),
@@ -39,7 +40,7 @@ const signup = async (req: Request, res: Response) => {
 
     const token = user.createJWT();
 
-    res.status(201).json({
+    res.status(StatusCodes.CREATED).json({
         user: {
             name: user.getName(),
             email: user.getEmail(),
@@ -49,6 +50,7 @@ const signup = async (req: Request, res: Response) => {
     })
 
 }
+
 
 module.exports = {
     login,
