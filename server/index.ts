@@ -6,6 +6,9 @@ const app: Application = express();
 
 const connectDB = require('./DB/connect')
 const UserRouter = require('./routes/UserRouter');
+const ChatRouter = require('./routes/ChatRouter');
+const MessageRouter = require('./routes/MessageRouter');
+
 app.use(express.json());
 
 const errorHandling = (err: any, req: Request, res: Response, next: NextFunction) => {
@@ -21,6 +24,8 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/user', UserRouter);
+app.use('/api/chat', ChatRouter);
+app.use('/api/message', MessageRouter)
 
 
 app.use(errorHandling)
