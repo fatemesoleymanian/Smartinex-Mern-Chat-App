@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import '../Styles/users-groups.css'
 import Logo from '../Images/live-chat2.png'
 import '../Styles/App.css'
@@ -6,23 +6,30 @@ import '../Styles/sidebar.css'
 import { IconButton } from "@mui/material";
 import SerachIcon from '@mui/icons-material/Search'
 import { AnimatePresence, motion } from "framer-motion"
+import { useNavigate } from "react-router-dom"
+import axios from "axios"
 
 export const Users = () => {
 
-    const [users, setUsers] = useState([
-        {
-            name: 'Hanie',
-            _id: Math.random()
-        },
-        {
-            name: 'Hossein',
-            _id: Math.random()
-        },
-        {
-            name: 'Maryam',
-            _id: Math.random()
-        },
-    ])
+    const [refresh, setRefresh] = useState(true);
+    const [users, setUsers] = useState([]);
+    const navigate = useNavigate();
+
+    const userData = JSON.parse(localStorage.getItem('user'))
+    if (!userData) {
+        navigate(-1);
+    }
+
+    useEffect(() => {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userData.token}`
+            }
+        };
+        axios.get('http://localhost:4000/api/user', config).then((response) => {
+            setUsers(response.data.users)
+        })
+    }, [refresh])
     return (
         <AnimatePresence>
             <motion.section
@@ -44,7 +51,7 @@ export const Users = () => {
                 {/* search */}
                 <div className="sb-search dark:bg-stone-800 dark:text-gray-100">
 
-                    <IconButton>
+                    <IconButton onClick={() => setRefresh(!refresh)}>
                         <SerachIcon className="dark:text-gray-100" />
                     </IconButton>
                     <input placeholder="Search" className="search-box dark:bg-stone-800 dark:text-gray-100 " />
@@ -57,8 +64,26 @@ export const Users = () => {
                     {
                         users && users.map((user, index) => {
                             return (
-                                <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.97 }} className="list-item dark:bg-stone-700 dark:text-gray-100" key={index}>
-                                    <p className="flex justify-center items-center bg-[#d9d9d9] text-[2rem] font-[bolder] text-[white] h-8 w-8 justify-self-center self-center p-1 rounded-[50%]">
+                                <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.97 }}
+                                    className="list-item dark:bg-stone-700 dark:text-gray-100" key={index}
+                                    onClick={() => {
+                                        const config = {
+                                            headers: {
+                                                Authorization: `Bearer ${userData.token}`
+                                            }
+                                        };
+                                        axios.post('http://localhost:4000/api/chat/',
+                                            {
+                                                userId: user._id,
+                                                name: user.name
+                                            }, config).then((res) => {
+                                                navigate(`/inbox/chatroom/${res.data._id}&${res.data.name}`)
+                                            })
+
+                                    }}>
+                                    <p className="flex justify-center items-center bg-[#d9d9d9] text-[2rem]
+                                     font-[bolder] text-[white] h-8 w-8 justify-self-center self-center p-1 
+                                     rounded-[50%]">
                                         {user.name.charAt(0)}
                                     </p>
                                     <p className="font-[bold] text-[rgba(0,0,0,0.54)] conv-title dark:text-gray-100">

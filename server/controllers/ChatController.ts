@@ -47,7 +47,7 @@ const accessChat = async (req: CustomRequest, res: Response) => {
         isGroupChat: false,
         $and: [
             { users: { $elemMatch: { $eq: req.user.userId } } },
-            { users: { $elemMatch: { $eq: userId } } }
+            { users: { $elemMatch: { $eq: userId } } },
         ]
     })
         .populate("users", "-password")
@@ -65,7 +65,7 @@ const accessChat = async (req: CustomRequest, res: Response) => {
         let chatData = {
             name: `${req.body.name} & ${req.user.name}`,
             isGroupChat: false,
-            user: [req.user.userId, userId]
+            users: [req.user.userId, userId]
         }
         try {
 
@@ -76,8 +76,7 @@ const accessChat = async (req: CustomRequest, res: Response) => {
             res.status(StatusCodes.OK).send(fullChat)
         }
         catch (error: any) {
-            res.status(StatusCodes.BadRequest);
-            throw new Error(error.message)
+            return res.status(400).json({ success: false, msg: 'User id needed!' })
 
         }
     }
@@ -101,9 +100,9 @@ const fetchGroupChats = async (req: CustomRequest, res: Response) => {
 const createGroupChat = async (req: CustomRequest, res: Response) => {
 
     if (!req.body.name) {
-        return res.status(StatusCodes.BadRequest).send({ message: "name of group is needed!" })
+        return res.status(StatusCodes.BAD_REQUEST).send({ message: "name of the group nedded!" })
     }
-
+    console.log(req.body)
     let users = JSON.parse(req.body.users)
 
     try {
@@ -120,9 +119,8 @@ const createGroupChat = async (req: CustomRequest, res: Response) => {
         res.status(StatusCodes.OK).send(fullGroupChat)
     }
     catch (error: any) {
-        res.status(StatusCodes.BadRequest);
+        res.status(StatusCodes.BAD_REQUEST);
         throw new Error(error.message)
-
     }
 }
 

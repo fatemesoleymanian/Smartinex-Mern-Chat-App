@@ -9,15 +9,26 @@ import {
     DialogTitle,
     IconButton
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import '../Styles/create-groups.css'
 import '../Styles/App.css'
 import DoneOutlineRoundedIcon from '@mui/icons-material/DoneOutlineRounded';
 import { AnimatePresence, motion } from "framer-motion";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const CreateGroup = () => {
+    useEffect(() => {
+        const userData = JSON.parse(localStorage.getItem('user'))
+        if (!userData) {
+            navigate(-1);
+        }
+    })
+    const navigate = useNavigate()
     const [groupName, setGroupName] = useState('');
+    const userData = JSON.parse(localStorage.getItem('user'));
     const [open, setOpen] = useState(false);
+
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -25,8 +36,20 @@ export const CreateGroup = () => {
     const handleClose = () => {
         setOpen(false);
     };
-    const CreateGroup = () => {
-        console.log('group created ' + groupName)
+    const createGroup = () => {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userData.token}`
+            }
+        };
+        let users = [];
+        users.push(userData.user._id)
+        axios.post('http://localhost:4000/api/chat/group/', {
+            name: groupName,
+            users: [JSON.stringify(users)]
+        }, config).then((response) => {
+            navigate('/inbox/groups')
+        })
     }
 
     return (
@@ -49,7 +72,7 @@ export const CreateGroup = () => {
                     <Button onClick={handleClose}>Cancel</Button>
                     <Button
                         onClick={() => {
-                            CreateGroup()
+                            createGroup()
                             handleClose();
                         }}
                         autoFocus

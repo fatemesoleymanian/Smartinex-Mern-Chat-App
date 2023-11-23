@@ -17,7 +17,7 @@ function App() {
         <Route path='/' element={<LoginAndRegister />} />
         <Route path='inbox' element={<MainContainer />} >
           <Route path='welcome' element={<Welcome />} />
-          <Route path='chatroom' element={<Chatbar />} />
+          <Route path='chatroom/:_id' element={<Chatbar />} />
           <Route path="users" element={<Users />} />
           <Route path='groups' element={<Groups />} />
           <Route path='create-group' element={<CreateGroup />} />

@@ -1,17 +1,26 @@
 import '../Styles/sidebar.css';
 import '../Styles/App.css'
 import { motion } from 'framer-motion'
-export const ConversationItem = ({ name, lastMessage, timestamp, _id }) => {
+import Group from '@mui/icons-material/Group'
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+export const ConversationItem = ({ name, lastMessage, timestamp, _id, groupTypeFlag }) => {
 
-
+    const navigate = useNavigate()
+    const lightTheme = useSelector((state) => state.themeKey);
     return (
-        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.98 }}
+
+        <motion.div title={groupTypeFlag === true ? "group chat" : "private chat"}
+            onClick={() => {
+                navigate(`chatroom/${_id}&${name}`)
+            }}
+            whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.98 }}
             className="cursor-pointer flex - px-8">
             {/* icon */}
 
             <div className="mr-4 relative w-12 text-center">
                 <div className="conv-icon rounded-full w-[3em] h-[3em] mr-2 bg-white">
-                    {name[0]}
+                    {groupTypeFlag === true ? <Group className="group-icon" /> : name[0]}
                 </div>
             </div>
             <div className="flex flex-col flex-1">
@@ -29,7 +38,7 @@ export const ConversationItem = ({ name, lastMessage, timestamp, _id }) => {
 
                 {/* last message */}
                 <div className="text-gray-300 text-md dark:text-gray-600">
-                    {lastMessage}
+                    {lastMessage && lastMessage.length > 16 ? `${lastMessage.substring(0, 16)}...` : lastMessage}
                 </div>
             </div>
 

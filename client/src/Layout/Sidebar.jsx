@@ -7,7 +7,7 @@ import LightModeIcon from '@mui/icons-material/LightMode'
 import LogoutIcon from '@mui/icons-material/LogoutOutlined'
 import { IconButton } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import '../Styles/sidebar.css';
 import '../Styles/App.css'
 import ConversationItem from '../Components/ConversationItem'
@@ -15,40 +15,39 @@ import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleTheme } from '../Store/themeSlice';
 import { AnimatePresence, motion } from 'framer-motion'
+import axios from 'axios'
+
 
 
 const Sidebar = () => {
 
+    const [searchValue, setSearchValue] = useState('');
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const lightTheme = useSelector((state) => state.themeKey)
-    const [conversations, setConversations] = useState([
-        {
-            _id: Math.random(),
-            name: 'chat 1',
-            lastMessage: 'hey guyss',
-            createdAt: 'today'
-        },
-        {
-            _id: Math.random(),
-            name: 'chat 2',
-            lastMessage: 'i am hanie',
-            createdAt: 'today'
-        },
-        {
-            _id: Math.random(),
-            name: 'chat 3',
-            lastMessage: 'hey friends',
-            createdAt: 'today'
-        },
-        {
-            _id: Math.random(),
-            name: 'chat 4',
-            lastMessage: 'bye guyss',
-            createdAt: 'today'
-        },
-    ]);
+    const [conversations, setConversations] = useState([]);
+    const [refresh, setRefresh] = useState(false)
+
+    useEffect(() => {
+        const userData = JSON.parse(localStorage.getItem('user'))
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userData.token}`
+            }
+        };
+        axios.get('http://localhost:4000/api/chat/', config).then((response) => {
+            setConversations(response.data)
+        })
+    }, [refresh]);
+    const userData = JSON.parse(localStorage.getItem('user'))
+
+    const logoutHandler = () => {
+        localStorage.removeItem('user')
+        navigate("/")
+    }
+
     return (
+
         <AnimatePresence>
             <motion.aside className="w-1/8 lg:w-2/6 bg-white dark:bg-stone-950 rounded-lg mr-5 xsm:mr-0 overflow-y-scroll
         scrollbar-width scrollbar-thumb-color dark:scrollbar-thumb-color-dark">
@@ -83,7 +82,7 @@ const Sidebar = () => {
                             {!lightTheme && <LightModeIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />}
                         </IconButton>
 
-                        <IconButton onClick={() => { navigate('/') }}>
+                        <IconButton onClick={logoutHandler}>
 
                             <LogoutIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
 
@@ -102,7 +101,11 @@ const Sidebar = () => {
                     <IconButton >
                         <SearchIcon className='w-[1.25em] h-[1.25em] dark:text-gray-100' />
                     </IconButton>
-                    <input type="text" placeholder='Search...' className='search-box dark:bg-stone-800 dark:text-gray-100' />
+                    <input type="text" placeholder='Search...'
+                        className='search-box dark:bg-stone-800 dark:text-gray-100'
+                        onClick={() => {
+                            setRefresh(true)
+                        }} />
                 </motion.div>
 
                 {/* SERACH END */}
@@ -117,9 +120,18 @@ const Sidebar = () => {
                     <div className='w-full space-y-10'>
                         {conversations &&
                             conversations.map((conv, index) => {
-                                return (
-                                    <ConversationItem _id={conv._id} name={conv.name} lastMessage={conv.lastMessage}
-                                        timestamp={conv.createdAt} key={index} />
+                                if (conv.isGroupChat) return (
+                                    <ConversationItem _id={conv._id} name={conv.name} lastMessage={conv?.lastMessage?.content}
+                                        timestamp={conv.updatedAt.split('T').pop()}
+                                        groupTypeFlag={true} key={index} />
+
+                                )
+                                else return (
+                                    <ConversationItem _id={conv._id}
+                                        name={conv?.users[1]?._id === userData?.user?._id ? conv?.users[0]?.name : conv?.users[1]?.name}
+                                        lastMessage={conv?.lastMessage?.content}
+                                        timestamp={conv.updatedAt.split('T').pop()}
+                                        groupTypeFlag={false} key={index} />
 
                                 )
                             })

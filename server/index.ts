@@ -11,12 +11,21 @@ const MessageRouter = require('./routes/MessageRouter');
 
 app.use(express.json());
 
+const cors = require('cors')
+
+
+
+app.use(cors({
+    origin: "*"
+})); // Use this after the variable declaration
+
 const errorHandling = (err: any, req: Request, res: Response, next: NextFunction) => {
     res.status(err.statusCode).json({
         msg: err.message,
         success: false,
     });
 };
+
 
 app.get('/', (req: Request, res: Response) => {
     res.send('<h1>You are testing this server!</h1>')
